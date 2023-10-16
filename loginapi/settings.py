@@ -97,7 +97,7 @@ WSGI_APPLICATION = 'loginapi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'kukudkuserver',   #kukudkuec2
+        'NAME': 'kukudkudb',   #kukudkuec2
         'HOST' : '13.235.196.27',
         'PORT' : '5432',
         'USER' : 'postgres',
