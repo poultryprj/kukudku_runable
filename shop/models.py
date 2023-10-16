@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models here.
 class shopModel(models.Model):
-    shopCode = models.CharField(null=True)
+    shopCode = models.CharField(null=True,max_length=5)
     shopName = models.CharField(max_length=100, null=True)
     shopArea = models.CharField(max_length=100, null=True)
     shopLatitude = models.DecimalField(max_digits=10, decimal_places=5,null=True)
@@ -11,8 +11,8 @@ class shopModel(models.Model):
     shopAddress = models.CharField(max_length=100,null=True)
     shopPincode = models.IntegerField(null=True)
     shopDistance = models.IntegerField(null=True)
-    shopMobileNo = models.CharField(null=True)
-    shopAlternateNo = models.CharField(null=True)
+    shopMobileNo = models.CharField(null=True,max_length=15)
+    shopAlternateNo = models.CharField(null=True,max_length=15)
     shopOwnerId = models.BigIntegerField(null=True)
     shopType = models.CharField(max_length=20,null=True)
     shopStatus = models.CharField(max_length=15,null=True)
