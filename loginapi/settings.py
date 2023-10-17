@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-15l-r*fzrfuoo!rznse3eo!t##-%r_m#(r58zs(+m_4(@*jj9a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost','192.168.1.24','.vercel.app',"*","13.235.196.27"]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','192.168.1.24','.vercel.app',"*","3.110.255.77"]
 
 
 # CORS_ORIGIN_WHITELIST = [
@@ -100,7 +100,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'kukudkudb',   #kukudkuec2
-        'HOST' : '13.235.196.27',
+        'HOST' : '3.110.255.77',
         'PORT' : '5432',
         'USER' : 'postgres',
         'PASSWORD' : 'kkk123',
