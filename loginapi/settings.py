@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     'users',
     'activitylog',
     'slr',
-    'whitenoise.runserver_nostatic'
+    'whitenoise.runserver_nostatic',
+    'dev_testing',
 ]
 
 MIDDLEWARE = [
@@ -77,7 +78,7 @@ ROOT_URLCONF = 'loginapi.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kukudku Shops in Pune on Leaflet Map</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 100vh; /* Adjust height as needed */
+      width: 100%; /* Adjust width as needed */
+      margin: 0 auto; /* Center the map */
+    }
+    body {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+function initMap() {
+  var map = L.map('map').setView([18.5204, 73.8567], 12);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: ''
+  }).addTo(map);
+
+  // Add zoom control to the map
+  L.control.zoom({
+    position: 'bottomright' // Position the zoom buttons at the bottom right corner
+  }).addTo(map);
+
+  var kukudkuShops = [
+    { name: 'Kukudku Shop 1', location: [18.4965, 73.9419], details: 'Finger-licking good chicken delicacies' },
+    { name: 'Kukudku Shop 2', location: [18.5255, 73.8660], details: 'Specializes in spicy chicken dishes' },
+    { name: 'Kukudku Shop 3', location: [18.4984, 73.8572], details: 'Known for its unique grilled chicken recipes' },
+    { name: 'Kukudku Shop 4', location: [18.5353, 73.8938], details: 'Offers a variety of fried chicken options' },
+    { name: 'Kukudku Shop 5', location: [18.5196, 73.8554], details: 'Popular for its crispy chicken snacks' },
+    { name: 'Kukudku Shop 6', location: [18.4974, 73.8237], details: 'Renowned for its flavorful roasted chicken' },
+    { name: 'Kukudku Shop 7', location: [18.5314, 73.8563], details: 'Famous for its homemade chicken marinades' },
+    { name: 'Kukudku Shop 8', location: [18.5180, 73.8326], details: 'Serves delicious chicken kebabs' },
+    { name: 'Kukudku Shop 9', location: [18.4961, 73.8580], details: 'Offers a variety of chicken curry dishes' },
+    { name: 'Kukudku Shop 10', location: [18.5062, 73.8908], details: 'Specializes in traditional Indian-style chicken preparations' }
+  ];
+
+  for (var i = 0; i < kukudkuShops.length; i++) {
+    var shop = kukudkuShops[i];
+    L.marker(shop.location).addTo(map)
+      .bindPopup('<b>' + shop.name + '</b><br>' + shop.details);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  initMap();
+});
+</script>
+
+</body>
+</html>
+
+
+
+
+

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Camera App</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #video-preview {
+            width: 100%;
+            max-width: 500px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+        }
+        .btn-camera {
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+        .btn-camera:not(:last-child) {
+            margin-right: 15px;
+        }
+        /* CSS for photo preview */
+        #photo-preview {
+            width: 100%; /* Fill the video frame */
+            max-width: 500px;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            display: none; /* Initially hide the uploaded photo */
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <h1 class="text-center mt-5">Camera App</h1>
+    <div class="text-center mt-4">
+        <button id="start-camera" class="btn btn-primary btn-camera">Start Camera</button>
+        <button id="take-photo" class="btn btn-primary btn-camera">Take Photo</button>
+        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+        <button id="upload-photo" class="btn btn-primary btn-camera">Upload Photo</button>
+        <button id="save-photo" style="display: none;" class="btn btn-primary btn-camera mx-auto mt-2">Save Photo</button>
+    </div>
+    <div class="d-flex justify-content-center mt-4">
+        <video id="video-preview" autoplay></video>
+        <img id="photo-preview" alt="Selected Image">
+    </div>
+
+    <!-- Bootstrap JS (Optional for some features like dropdowns, modals, etc.) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1103.0.min.js"></script>
+    <script>
+        const video = document.getElementById('video-preview');
+        const photo = document.getElementById('photo-preview');
+        const startCameraButton = document.getElementById('start-camera');
+        const takePhotoButton = document.getElementById('take-photo');
+        const uploadPhotoButton = document.getElementById('upload-photo');
+        const savePhotoButton = document.getElementById('save-photo');
+        const fileInput = document.getElementById('fileInput');
+
+        let stream;
+
+        async function startCamera() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                video.style.display = 'block'; // Show the video preview
+                photo.style.display = 'none'; // Hide the uploaded photo
+            } catch (err) {
+                console.error('Error accessing the camera:', err);
+            }
+        }
+
+        async function takePhoto() {
+            try {
+                // Capture photo from the video stream
+                const aspectRatio = video.videoWidth / video.videoHeight;
+                const targetWidth = 580;
+                const targetHeight = Math.floor(targetWidth / aspectRatio);
+
+                const canvas = document.createElement('canvas');
+                canvas.width = targetWidth;
+                canvas.height = targetHeight;
+
+                canvas.getContext('2d').drawImage(video, 0, 0, targetWidth, targetHeight);
+                photo.src = canvas.toDataURL('image/png');
+                photo.style.display = 'block'; // Show the captured photo
+                savePhotoButton.style.display = 'block'; // Show the save photo button
+                video.style.display = 'none'; // Hide the video preview
+            } catch (err) {
+                console.error('Error taking photo:', err);
+            }
+        }
+
+        function uploadPhoto() {
+            fileInput.click();
+        }
+
+        async function handleFileUpload() {
+            const file = fileInput.files[0];
+            if (file) {
+                try {
+                    const reader = new FileReader();
+
+                    reader.onload = function(event) {
+                        const imgData = event.target.result;
+                        // Display the selected image in the video frame
+                        photo.src = imgData;
+                        photo.style.display = 'block'; // Show the uploaded photo
+                        savePhotoButton.style.display = 'block'; // Show the save photo button
+                        video.style.display = 'none'; // Hide the video preview
+                    };
+
+                    reader.readAsDataURL(file);
+                } catch (err) {
+                    console.error('Error reading file:', err);
+                }
+            }
+        }
+
+        AWS.config.update({
+            accessKeyId: 'AKIA6AL6FGIVCDBX5BHU',
+            secretAccessKey: 'SmnW00RAV2g6JAqfNMTuNPYZZkJr6hslgIVryjnc',
+            region: 'ap-south-1' // Replace with your desired AWS region
+        });
+
+        const s3 = new AWS.S3({
+            apiVersion: '2006-03-01',
+            params: { Bucket: 'kukudku' } // Replace with your S3 bucket name
+        });
+
+        async function savePhoto() {
+            try {
+                const photoSrc = photo.src;
+                const response = await fetch(photoSrc);
+                const blob = await response.blob();
+
+                const timestamp = Date.now(); // Get current timestamp
+                const fileName = `photo_${timestamp}.png`; // Create filename
+                const folderName = 'image_upload'; // If you want to save it in a specific folder
+
+                const params = {
+                    Key: `${folderName}/${fileName}`,
+                    Body: blob,
+                    ContentType: 'image/png',
+                    ACL: 'public-read' // Set appropriate ACL permissions
+                };
+
+                s3.upload(params, function(err, data) {
+                    if (err) {
+                        console.error('Error saving photo:', err);
+                        alert('Error saving photo. Please try again.');
+                    } else {
+                        console.log('Photo saved to S3:', data.Location);
+                        alert('Photo saved to S3 bucket successfully!');
+                    }
+                });
+            } catch (err) {
+                console.error('Error saving photo to S3 bucket:', err);
+            }
+        }
+
+        // Event listeners for buttons
+        startCameraButton.addEventListener('click', startCamera);
+        takePhotoButton.addEventListener('click', takePhoto);
+        uploadPhotoButton.addEventListener('click', uploadPhoto);
+        savePhotoButton.addEventListener('click', savePhoto);
+        fileInput.addEventListener('change', handleFileUpload);
+    </script>
+</body>
+</html>

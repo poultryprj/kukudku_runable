@@ -42,7 +42,8 @@ urlpatterns = [
     path('', include('finalizecollection.urls')),
     path('', include('dashboard.urls')),
     path('', include('slr.urls')),
-    path('routes/<int:route_id>/', include('slr.urls'))
+    path('routes/<int:route_id>/', include('slr.urls')),
+    path('', include('dev_testing.urls')),
     #path('<str:route>/', include('slr.urls')),
     
 ]
